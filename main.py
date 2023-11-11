@@ -4,14 +4,13 @@ import streamlit as st
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Chroma
-from dotenv import load_dotenv
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 
 # Fix for SQLite issue in certain environments.
-# __import__('pysqlite3')
-# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 
 # Set up the title and a separator for the Streamlit web app interface.
