@@ -59,18 +59,21 @@ if uploaded_file is not None:
 
     # Button to trigger the question-answering process.
     if st.button("Ask"):
-        # add spinner for waiting
-        with st.spinner('Wait for it...'):
-            time.sleep(5)
-        st.success('Done!')
+        if question:
+            # add spinner for waiting
+            with st.spinner('Wait for it...'):
+                time.sleep(5)
+            st.success('Done!')
 
-        # Initialize a ChatOpenAI model with specific configurations.
-        llm = ChatOpenAI(model_name="gpt-4", temperature=0)
+            # Initialize a ChatOpenAI model with specific configurations.
+            llm = ChatOpenAI(model_name="gpt-4", temperature=0)
 
-        # Create a question-answering chain using the ChatOpenAI model and Chroma retriever.
-        qa_chain = RetrievalQA.from_chain_type(
-            llm, retriever=db.as_retriever())
-        result = qa_chain({"query": question})
+            # Create a question-answering chain using the ChatOpenAI model and Chroma retriever.
+            qa_chain = RetrievalQA.from_chain_type(
+                llm, retriever=db.as_retriever())
+            result = qa_chain({"query": question})
 
-        # Display the result.
-        st.write(result["result"])
+            # Display the result.
+            st.write(result["result"])
+        else:
+            st.error("Please enter a question.")
