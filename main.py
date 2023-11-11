@@ -1,4 +1,3 @@
-# Fix for SQLite issue in certain environments.
 import os
 import tempfile
 import streamlit as st
@@ -9,14 +8,11 @@ from dotenv import load_dotenv
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-# Import necessary modules for PDF processing, text splitting, embeddings, environment management,
-# vector storage, chat modeling, question answering, Streamlit for web app, and handling temporary files.
+# Fix for SQLite issue in certain environments.
+# __import__('pysqlite3')
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-# Load environment variables, typically used for API keys and other configurations.
-load_dotenv()
 
 # Set up the title and a separator for the Streamlit web app interface.
 st.title("ChatPDF")
