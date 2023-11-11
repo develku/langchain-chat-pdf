@@ -10,6 +10,7 @@ import os
 import tempfile
 import streamlit as st
 import sys
+import time
 
 # Fix for SQLite issue in certain environments.
 __import__('pysqlite3')
@@ -66,6 +67,8 @@ if uploaded_file is not None:
         if question:
             # Show a spinner while the question is being processed.
             with st.spinner('Processing...'):
+                time.sleep(5)
+
                 # Initialize the ChatOpenAI model with specific configurations.
                 llm = ChatOpenAI(model_name="gpt-4", temperature=0)
                 # Create a QA chain with the model and Chroma retriever for answering the question.
