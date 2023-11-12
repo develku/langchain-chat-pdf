@@ -10,83 +10,92 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from streamlit_extras.buy_me_a_coffee import button
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-import sys
 
-# Workaround for a known SQLite issue in specific deployment environments.
+
+# Workaround for SQLite issue in specific deployment environments.
+import sys
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-# Adding a Buy Me a Coffee button for support/donations.
+# button for buy me a coffee
 button(username="develku", floating=True, width=221)
 
-# Setting up the title and layout for the Streamlit application.
+# Set up the Streamlit app's title and a separator for layout.
 st.title("ChatPDF")
 st.write("---")
 
-# Creating a field for users to enter their OpenAI API key.
+# Getting OpenAI KEY from User
 openai_key = st.text_input("Enter your OpenAI Key", type="password")
 
-# Creating an uploader for users to upload PDF files.
+# Create a file uploader in the Streamlit interface for users to upload PDF files.
 uploaded_file = st.file_uploader("Choose a PDF file", type=['pdf'])
 st.write("---")
 
-# Function to process the uploaded PDF file.
+# Define a function to process the uploaded PDF file.
 
 
 def pdf_to_document(uploaded_file):
-    # Temporarily storing and handling the uploaded file.
+    # Create a temporary directory to store and handle the uploaded file.
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_filepath = os.path.join(temp_dir, uploaded_file.name)
         with open(temp_filepath, "wb") as f:
             f.write(uploaded_file.getvalue())
-        # Loading and splitting the PDF into individual pages.
+        # Load and split the PDF file into individual pages.
         loader = PyPDFLoader(temp_filepath)
         pages = loader.load_and_split()
         return pages
 
 
-# Processing the uploaded PDF file if available.
+# Check if a PDF file has been uploaded.
 if uploaded_file is not None:
     try:
+        # Process the uploaded PDF and retrieve its pages.
         pages = pdf_to_document(uploaded_file)
 
-        # Splitting the PDF text into smaller chunks.
+        # Configure the text splitter for segmenting the PDF into smaller chunks.
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=100, length_function=len, is_separator_regex=False)
+            chunk_size=300, chunk_overlap=20, length_function=len, is_separator_regex=False)
+
+        # Split the PDF into manageable text segments.
         texts = text_splitter.split_documents(pages)
 
-        # Embedding the text for numerical representation.
+        # Initialize OpenAI embeddings for numerical representation of text.
         embedding_model = OpenAIEmbeddings(openai_api_key=openai_key)
+
+        # Create a Chroma vector store with the text segments and the embedding model.
         db = Chroma.from_documents(texts, embedding_model)
 
-        # Custom handler for streaming output.
+        # Handler for Stream
+        from langchain.callbacks.base import BaseCallbackHandler
+
         class StreamHandler(BaseCallbackHandler):
             def __init__(self, container, initial_text=""):
                 self.container = container
                 self.text = initial_text
 
-            def on_llm_new_token(slef, token: str, **kwargs) -> None:
+            def on_llm_new_token(self, token: str, **kwargs) -> None:
                 self.text += token
                 self.container.markdown(self.text)
 
+        # Add an interface element for users to ask questions about the PDF.
         st.header("Ask the PDF!")
         question = st.text_input("Type your question")
 
+        # Add a button to submit the question for processing.
         if st.button("Ask"):
             with st.spinner('Wait for it...'):
                 chat_box = st.empty()
-                stream_handler = StreamHandler(chat_box)
+                stream_hander = StreamHandler(chat_box)
 
-                # Initializing ChatOpenAI model with streaming capability.
+                # Initialize the ChatOpenAI model with specified configurations.
                 llm = ChatOpenAI(model_name="gpt-4",
-                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_handler])
+                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_hander])
 
-                # Creating a QA chain for answering questions from the PDF.
+                # Create a question-answering chain with the ChatOpenAI model and Chroma retriever.
                 qa_chain = RetrievalQA.from_chain_type(
                     llm, retriever=db.as_retriever())
                 qa_chain({"query": question})
 
-                st.success('Done!')
     except Exception as e:
-        # Displaying any exceptions that occur during processing.
+        # Display an error message if any exception occurs during the process.
         st.error(f"An error occurred: {e}")
