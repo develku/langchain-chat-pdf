@@ -8,12 +8,15 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
+from streamlit_extras.buy_me_a_coffee import button
 
 # Workaround for SQLite issue in specific deployment environments.
 import sys
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
+
+button(username="develku", floating=True, width=221)
 # Set up the Streamlit app's title and a separator for layout.
 st.title("ChatPDF")
 st.write("---")
