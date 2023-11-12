@@ -1,6 +1,5 @@
 import os
 import tempfile
-import time
 import streamlit as st
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
@@ -9,7 +8,6 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from streamlit_extras.buy_me_a_coffee import button
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 
 # Workaround for SQLite issue in specific deployment environments.
