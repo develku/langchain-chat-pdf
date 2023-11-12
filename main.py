@@ -28,7 +28,7 @@ openai_key = st.text_input("Enter your OpenAI Key", type="password")
 
 # Allow the user to select a GPT model
 # Update this list based on available models
-available_models = ["gpt-3.5-turbo", "gpt-4", "text-davinci-002"]
+available_models = ["gpt-4", "gpt-3.5-turbo"]
 selected_model = st.selectbox("Choose a GPT model", available_models)
 
 # Function to process the uploaded PDF file.
