@@ -27,14 +27,14 @@ st.write("---")
 # Getting OpenAI KEY from User
 openai_key = st.text_input("Enter your OpenAI Key", type="password")
 
-# Create a file uploader in the Streamlit interface for users to upload PDF files.
-uploaded_file = st.file_uploader("Choose a PDF file", type=['pdf'])
-st.write("---")
-
 # Allow the user to select a GPT model
 model_choices = ["gpt-4", "gpt-3.5-turbo"]  # List of available models
 selected_model = st.selectbox(
     "Choose a GPT model", model_choices, index=0)  # Default to GPT-4
+
+# Create a file uploader in the Streamlit interface for users to upload PDF files.
+uploaded_file = st.file_uploader("Choose a PDF file", type=['pdf'])
+st.write("---")
 
 
 # Define a function to process the uploaded PDF file.
