@@ -15,8 +15,9 @@ import sys
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-
+# button for buy me a coffee
 button(username="develku", floating=True, width=221)
+
 # Set up the Streamlit app's title and a separator for layout.
 st.title("ChatPDF")
 st.write("---")
