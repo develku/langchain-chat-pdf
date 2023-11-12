@@ -65,7 +65,7 @@ if uploaded_file is not None:
                 self.container = container
                 self.text = initial_text
 
-            def on_llm_new_token(self, token: str, **kwargs) -> None:
+            def on_llm_new_token(slef, token: str, **kwargs) -> None:
                 self.text += token
                 self.container.markdown(self.text)
 
@@ -86,6 +86,7 @@ if uploaded_file is not None:
                     llm, retriever=db.as_retriever())
                 qa_chain({"query": question})
 
+                st.success('Done!')
     except Exception as e:
         # Displaying any exceptions that occur during processing.
         st.error(f"An error occurred: {e}")
