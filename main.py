@@ -53,7 +53,7 @@ if uploaded_file is not None:
 
         # Splitting the PDF text into smaller chunks.
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=100, length_function=len, is_separator_regex=False)
+            chunk_size=500, chunk_overlap=50, length_function=len, is_separator_regex=False)
         texts = text_splitter.split_documents(pages)
 
         # Embedding the text for numerical representation.
@@ -78,7 +78,7 @@ if uploaded_file is not None:
                 chat_box = st.empty()
                 stream_handler = StreamHandler(chat_box)
 
-                # Initializing ChatOpenAI model with streaming capability.
+               # Initialize the ChatOpenAI model with the selected model and configurations
                 llm = ChatOpenAI(model_name=selected_model,
                                  temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_handler])
 
