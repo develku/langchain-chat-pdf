@@ -83,13 +83,9 @@ if uploaded_file is not None:
 
         # Add a button to submit the question for processing.
         if st.button("Ask"):
-            if question:
+            with st.spinner('Wait for it...')
                 chat_box = st.empty()
                 stream_handler = StreamHandler(chat_box)
-
-                # Show a spinner and pause for a short duration while processing.
-                with st.spinner('Wait for it...'):
-                    time.sleep(5)
 
                 # Initialize the ChatOpenAI model with specified configurations.
                 llm = ChatOpenAI(model_name="gpt-4",
@@ -102,9 +98,6 @@ if uploaded_file is not None:
 
                 st.success('Done!')
                 # Display the result from the question-answering process.
-            else:
-                # Display an error if no question is entered.
-                st.error("Please enter a question.")
     except Exception as e:
         # Display an error message if any exception occurs during the process.
         st.error(f"An error occurred: {e}")
