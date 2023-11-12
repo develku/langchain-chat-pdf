@@ -9,6 +9,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from streamlit_extras.buy_me_a_coffee import button
+from langchaing.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 # Workaround for SQLite issue in specific deployment environments.
 import sys
@@ -76,7 +77,7 @@ if uploaded_file is not None:
 
                 # Initialize the ChatOpenAI model with specified configurations.
                 llm = ChatOpenAI(model_name="gpt-4",
-                                 temperature=0, openai_api_key=openai_key)
+                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[StreamingStdOutCallbackHandler()])
 
                 # Create a question-answering chain with the ChatOpenAI model and Chroma retriever.
                 qa_chain = RetrievalQA.from_chain_type(
