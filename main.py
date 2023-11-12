@@ -65,6 +65,18 @@ if uploaded_file is not None:
         # Create a Chroma vector store with the text segments and the embedding model.
         db = Chroma.from_documents(texts, embedding_model)
 
+        # Handler for Stream
+        from langchain.callbacks.base import BaseCallbackHandler
+
+        class StreamHandler(BaseCallbackHandler):
+            def __init__(self, container, initial_text=""):
+                self.container = container
+                self.text = initial_text
+
+            def on_llm_new_token(slef, token: str, **kwargs) -> None:
+                self.text += token
+                self.container.markdown(self.text)
+
         # Add an interface element for users to ask questions about the PDF.
         st.header("Ask the PDF!")
         question = st.text_input("Type your question")
@@ -72,22 +84,24 @@ if uploaded_file is not None:
         # Add a button to submit the question for processing.
         if st.button("Ask"):
             if question:
+                chat_box = st.empty()
+                stream_handler = StreamHandler(chat_box)
+
                 # Show a spinner and pause for a short duration while processing.
                 with st.spinner('Wait for it...'):
                     time.sleep(5)
 
                 # Initialize the ChatOpenAI model with specified configurations.
                 llm = ChatOpenAI(model_name="gpt-4",
-                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[StreamingStdOutCallbackHandler()])
+                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_handler])
 
                 # Create a question-answering chain with the ChatOpenAI model and Chroma retriever.
                 qa_chain = RetrievalQA.from_chain_type(
                     llm, retriever=db.as_retriever())
-                result = qa_chain({"query": question})
+                qa_chain({"query": question})
 
                 st.success('Done!')
                 # Display the result from the question-answering process.
-                st.write(result["result"])
             else:
                 # Display an error if no question is entered.
                 st.error("Please enter a question.")
