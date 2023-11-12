@@ -73,7 +73,7 @@ if uploaded_file is not None:
                 self.container = container
                 self.text = initial_text
 
-            def on_llm_new_token(slef, token: str, **kwargs) -> None:
+            def on_llm_new_token(self, token: str, **kwargs) -> None:
                 self.text += token
                 self.container.markdown(self.text)
 
@@ -85,18 +85,17 @@ if uploaded_file is not None:
         if st.button("Ask"):
             with st.spinner('Wait for it...'):
                 chat_box = st.empty()
-                stream_handler = StreamHandler(chat_box)
+                stream_hander = StreamHandler(chat_box)
 
                 # Initialize the ChatOpenAI model with specified configurations.
                 llm = ChatOpenAI(model_name="gpt-4",
-                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_handler])
+                                 temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_hander])
 
                 # Create a question-answering chain with the ChatOpenAI model and Chroma retriever.
                 qa_chain = RetrievalQA.from_chain_type(
                     llm, retriever=db.as_retriever())
                 qa_chain({"query": question})
 
-                st.success('Done!')
     except Exception as e:
         # Display an error message if any exception occurs during the process.
         st.error(f"An error occurred: {e}")
