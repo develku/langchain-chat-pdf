@@ -83,7 +83,7 @@ if uploaded_file is not None:
 
         # Add a button to submit the question for processing.
         if st.button("Ask"):
-            with st.spinner('Wait for it...')
+            with st.spinner('Wait for it...'):
                 chat_box = st.empty()
                 stream_handler = StreamHandler(chat_box)
 
@@ -97,7 +97,6 @@ if uploaded_file is not None:
                 qa_chain({"query": question})
 
                 st.success('Done!')
-                # Display the result from the question-answering process.
     except Exception as e:
         # Display an error message if any exception occurs during the process.
         st.error(f"An error occurred: {e}")
