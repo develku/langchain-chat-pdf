@@ -23,13 +23,12 @@ button(username="develku", floating=True, width=221)
 st.title("ChatPDF")
 st.write("---")
 
-# Getting OpenAI KEY from User
+# Creating a field for users to enter their OpenAI API key.
 openai_key = st.text_input("Enter your OpenAI Key", type="password")
 
-# Allow the user to select a GPT model
-# Update this list based on available models
-available_models = ["gpt-4", "gpt-3.5-turbo"]
-selected_model = st.selectbox("Choose a GPT model", available_models)
+# Creating an uploader for users to upload PDF files.
+uploaded_file = st.file_uploader("Choose a PDF file", type=['pdf'])
+st.write("---")
 
 # Function to process the uploaded PDF file.
 
@@ -53,7 +52,7 @@ if uploaded_file is not None:
 
         # Splitting the PDF text into smaller chunks.
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=500, chunk_overlap=50, length_function=len, is_separator_regex=False)
+            chunk_size=1000, chunk_overlap=100, length_function=len, is_separator_regex=False)
         texts = text_splitter.split_documents(pages)
 
         # Embedding the text for numerical representation.
@@ -78,8 +77,8 @@ if uploaded_file is not None:
                 chat_box = st.empty()
                 stream_handler = StreamHandler(chat_box)
 
-               # Initialize the ChatOpenAI model with the selected model and configurations
-                llm = ChatOpenAI(model_name=selected_model,
+                # Initializing ChatOpenAI model with streaming capability.
+                llm = ChatOpenAI(model_name="gpt-4",
                                  temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_handler])
 
                 # Creating a QA chain for answering questions from the PDF.
