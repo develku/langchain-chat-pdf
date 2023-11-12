@@ -31,6 +31,12 @@ openai_key = st.text_input("Enter your OpenAI Key", type="password")
 uploaded_file = st.file_uploader("Choose a PDF file", type=['pdf'])
 st.write("---")
 
+# Allow the user to select a GPT model
+model_choices = ["gpt-4", "gpt-3.5-turbo"]  # List of available models
+selected_model = st.selectbox(
+    "Choose a GPT model", model_choices, index=0)  # Default to GPT-4
+
+
 # Define a function to process the uploaded PDF file.
 
 
@@ -54,7 +60,7 @@ if uploaded_file is not None:
 
         # Configure the text splitter for segmenting the PDF into smaller chunks.
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=300, chunk_overlap=20, length_function=len, is_separator_regex=False)
+            chunk_size=1000, chunk_overlap=100, length_function=len, is_separator_regex=False)
 
         # Split the PDF into manageable text segments.
         texts = text_splitter.split_documents(pages)
@@ -88,7 +94,7 @@ if uploaded_file is not None:
                 stream_hander = StreamHandler(chat_box)
 
                 # Initialize the ChatOpenAI model with specified configurations.
-                llm = ChatOpenAI(model_name="gpt-4",
+                llm = ChatOpenAI(model_name=selected_model,
                                  temperature=0, openai_api_key=openai_key, streaming=True, callbacks=[stream_hander])
 
                 # Create a question-answering chain with the ChatOpenAI model and Chroma retriever.
