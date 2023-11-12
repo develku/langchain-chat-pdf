@@ -2,7 +2,6 @@ import os
 import tempfile
 import time
 import streamlit as st
-import streamlit.config as _config
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Chroma
@@ -17,9 +16,6 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 import sys
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
-# Setting the max upload size to 8 MB
-_config.set_option('server.maxUploadSize', 8)
 
 # button for buy me a coffee
 button(username="develku", floating=True, width=221)
