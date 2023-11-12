@@ -1,7 +1,9 @@
+import sys
 import os
 import tempfile
 import time
 import streamlit as st
+import streamlit.config as _config
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.vectorstores import Chroma
@@ -11,9 +13,10 @@ from langchain.document_loaders import PyPDFLoader
 from streamlit_extras.buy_me_a_coffee import button
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
+# Setting the max upload size to 8 MB
+_config.get_option("server.maxUploadSize", 8)
 
 # Workaround for SQLite issue in specific deployment environments.
-import sys
 __import__('pysqlite3')
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
