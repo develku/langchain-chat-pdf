@@ -9,7 +9,8 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyPDFLoader
 from streamlit_extras.buy_me_a_coffee import button
-from langchaing.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+
 
 # Workaround for SQLite issue in specific deployment environments.
 import sys
